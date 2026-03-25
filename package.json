@@ -116,6 +116,7 @@
 		"@types/react": "^19.1.12",
 		"@types/react-dom": "^19.1.9",
 		"@typescript/native-preview": "7.0.0-dev.20250716.1",
+		"@vue/runtime-dom": "^3.5.31",
 		"esbuild": "^0.25.9",
 		"esbuild-plugin-solid": "^0.6.0",
 		"history": "5.3.0",
@@ -128,7 +129,8 @@
 		"solid-js": "^1.9.9",
 		"typescript": "^5.9.2",
 		"vite": "npm:rolldown-vite@latest",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.4",
+		"vue": "^3.5.31"
 	},
 	"prettier": {
 		"useTabs": true,

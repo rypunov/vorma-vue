@@ -1,17 +1,26 @@
-import type {
-	ExtractApp,
-	PermissivePatternBasedProps,
-	VormaAppBase,
-	VormaLoaderPattern,
-} from "vorma/client";
-import type { VormaAppConfig } from "vorma/client";
+import type { VNode } from "vue";
+
+type VormaAppBase = Record<string, unknown>;
+type VormaLoaderPattern<App> = string;
+type ExtractApp<C> = C extends { app: infer A extends VormaAppBase }
+	? A
+	: VormaAppBase;
+type PermissivePatternBasedProps<
+	App extends VormaAppBase,
+	Pattern extends VormaLoaderPattern<App>,
+> = {
+	pattern?: Pattern;
+	params?: Record<string, string>;
+	splatValues?: string[];
+};
+type VormaAppConfig = Record<string, unknown>;
 
 type BasicLinkProps = {
 	to: string;
-	children?: JSX.Element | string;
+	children?: VNode | string;
 };
 
-export function VormaLink(props: BasicLinkProps): JSX.Element {
+export function VormaLink(props: BasicLinkProps): VNode {
 	return <a href={props.to}>{props.children}</a>;
 }
 
@@ -20,7 +29,7 @@ type TypedVormaLinkProps<
 	Pattern extends VormaLoaderPattern<App> = VormaLoaderPattern<App>,
 > = PermissivePatternBasedProps<App, Pattern> & {
 	to?: string;
-	children?: JSX.Element | string;
+	children?: VNode | string;
 };
 
 export function makeTypedLink<C extends VormaAppConfig>(
@@ -29,7 +38,7 @@ export function makeTypedLink<C extends VormaAppConfig>(
 ) {
 	return function TypedLink<Pattern extends VormaLoaderPattern<ExtractApp<C>>>(
 		_props: TypedVormaLinkProps<ExtractApp<C>, Pattern>,
-	): JSX.Element {
+	): VNode {
 		return <a href={"#"}>{_props.children}</a>;
 	};
 }

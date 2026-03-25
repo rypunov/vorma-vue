@@ -1,6 +1,10 @@
-import type { VormaAppBase, VormaLoaderPattern, VormaLoaderOutput } from "vorma/client";
+import type { VNode } from "vue";
 
-export function VormaRootOutlet(): JSX.Element {
+type VormaAppBase = Record<string, unknown>;
+type VormaLoaderPattern<App> = string;
+type VormaLoaderOutput<App, Pattern> = Record<string, unknown>;
+
+export function VormaRootOutlet(): VNode {
 	return <div>Vue VormaRootOutlet</div>;
 }
 
