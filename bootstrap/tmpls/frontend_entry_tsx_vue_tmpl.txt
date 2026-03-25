@@ -1,0 +1,4 @@
+import { createApp } from "vue";
+import { VormaRootOutlet } from "./internal/framework/_typescript/vue";
+
+createApp(VormaRootOutlet).mount("#app");
