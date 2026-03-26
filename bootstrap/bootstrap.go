@@ -310,8 +310,9 @@ func Init(o Options) {
 
 	if do.UIVariant == "vue" {
 		do.tmplWriteMust("frontend/src/vorma.entry.tsx", "tmpls/frontend_entry_tsx_vue_tmpl.txt")
-
+	
 		installJSPkg(do, "vue")
+		installJSPkg(do, "@vitejs/plugin-vue-jsx")
 	}
 
 	if do.DeploymentTarget == "vercel" {
@@ -410,7 +411,8 @@ func resolveUIVitePlugin(do derivedOptions) string {
 	case "preact":
 		return "@preact/preset-vite"
 	case "vue":
-		return "@vitejs/plugin-vue"
+		// Для Vue нужны оба плагина: основной и JSX
+		return "@vitejs/plugin-vue @vitejs/plugin-vue-jsx"
 	}
 	panic("unknown UI variant: " + do.UIVariant)
 }
