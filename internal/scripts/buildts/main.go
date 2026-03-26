@@ -28,6 +28,7 @@ func main() {
 	buildReact()
 	buildSolid()
 	buildPreact()
+	buildVue()
 	buildVite()
 	buildCreate()
 
@@ -140,6 +141,27 @@ func buildPreact() {
 	})
 }
 
+func buildVue() {
+	tsconfig := "./internal/framework/_typescript/vue/tsconfig.json"
+	runTSCWithOpts(tsconfig, "./dist/vue", "./internal/framework/_typescript/vue")
+	build("vue", esbuild.BuildOptions{
+		Sourcemap:   esbuild.SourceMapLinked,
+		Target:      esbuild.ESNext,
+		Format:      esbuild.FormatESModule,
+		TreeShaking: esbuild.TreeShakingTrue,
+		Splitting:   true,
+		Write:       true,
+		Bundle:      true,
+		EntryPoints: []string{"./internal/framework/_typescript/vue/index.tsx"},
+		External: []string{
+			"vorma",
+			"vue",
+		},
+		Outdir:   "./dist/vue",
+		Tsconfig: tsconfig,
+	})
+}
+
 func buildVite() {
 	tsconfig := "./internal/framework/_typescript/vite/tsconfig.json"
 	runTSC(tsconfig)
@@ -193,17 +215,21 @@ func buildCreate() {
 /////////////////////////////////////////////////////////////////////
 
 func runTSC(tsConfig string) {
+	runTSCWithOpts(tsConfig, "./npm_dist", "./")
+}
+
+func runTSCWithOpts(tsConfig, outDir, rootDir string) {
 	fmtStr := "pnpm tsc" +
 		" --project %s" +
 		" --declaration" +
 		" --emitDeclarationOnly" +
-		" --outDir ./npm_dist" +
+		" --outDir %s" +
 		" --noEmit false" +
-		" --rootDir ./" +
+		" --rootDir %s" +
 		" --sourceMap" +
 		" --declarationMap"
 
-	cmdStr := fmt.Sprintf(fmtStr, tsConfig)
+	cmdStr := fmt.Sprintf(fmtStr, tsConfig, outDir, rootDir)
 	log.Printf("running command: %s", cmdStr)
 	fields := strings.Fields(cmdStr)
 	cmd := exec.Command(fields[0], fields[1:]...)

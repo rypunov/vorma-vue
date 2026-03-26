@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../internal/framework/_typescript/vue/index.tsx"],"names":[],"mappings":"AAAA,OAAO,EACN,wBAAwB,EACxB,sBAAsB,EACtB,6BAA6B,EAC7B,sBAAsB,EACtB,KAAK,UAAU,EACf,KAAK,eAAe,GACpB,MAAM,kBAAkB,CAAC;AAC1B,OAAO,EAAE,SAAS,EAAE,aAAa,EAAE,MAAM,gBAAgB,CAAC;AAC1D,OAAO,EACN,eAAe,EACf,aAAa,EACb,WAAW,EACX,aAAa,GACb,MAAM,eAAe,CAAC"}

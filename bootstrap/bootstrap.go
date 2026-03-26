@@ -18,7 +18,7 @@ import (
 type Options struct {
 	// e.g., "appname" or "modroot/apps/appname"
 	GoImportBase string
-	// "react", "preact", or "solid"
+	// "react", "preact", "solid", or "vue"
 	UIVariant string
 	// "npm", "pnpm", "yarn", or "bun"
 	JSPackageManager string
@@ -113,6 +113,9 @@ func (o Options) derived() derivedOptions {
 	case "preact":
 		do.TSConfigJSXVal = "react-jsx"
 		do.TSConfigJSXImportSourceVal = "preact"
+	case "vue":
+		do.TSConfigJSXVal = "preserve"
+		do.TSConfigJSXImportSourceVal = "vue"
 	}
 
 	if o.DeploymentTarget != "none" &&
@@ -305,6 +308,12 @@ func Init(o Options) {
 		installJSPkg(do, "@preact/signals")
 	}
 
+	if do.UIVariant == "vue" {
+		do.tmplWriteMust("frontend/src/vorma.entry.tsx", "tmpls/frontend_entry_tsx_vue_tmpl.txt")
+
+		installJSPkg(do, "vue")
+	}
+
 	if do.DeploymentTarget == "vercel" {
 		installJSPkg(do, "@vercel/node")
 	}
@@ -400,6 +409,8 @@ func resolveUIVitePlugin(do derivedOptions) string {
 		return "vite-plugin-solid"
 	case "preact":
 		return "@preact/preset-vite"
+	case "vue":
+		return "@vitejs/plugin-vue"
 	}
 	panic("unknown UI variant: " + do.UIVariant)
 }

@@ -43,6 +43,10 @@
 			"import": "./npm_dist/internal/framework/_typescript/preact/index.js",
 			"types": "./npm_dist/internal/framework/_typescript/preact/index.d.ts"
 		},
+		"./vue": {
+			"types": "./dist/vue/index.d.ts",
+			"import": "./dist/vue/index.js"
+		},
 		"./vite": {
 			"import": "./npm_dist/internal/framework/_typescript/vite/vite.js",
 			"types": "./npm_dist/internal/framework/_typescript/vite/vite.d.ts"

@@ -52,10 +52,12 @@ var UIVariants = struct {
 	React  UIVariant
 	Preact UIVariant
 	Solid  UIVariant
+	Vue    UIVariant
 }{
 	React:  "react",
 	Preact: "preact",
 	Solid:  "solid",
+	Vue:    "vue",
 }
 
 type (
