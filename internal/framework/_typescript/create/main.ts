@@ -22,6 +22,31 @@ const __dirname = dirname(__filename);
 
 const allowedUIVariants = ["react", "preact", "solid", "vue"] as const;
 
+async function copyVormaFiles(projectPath: string) {
+    const sourceVorma = path.resolve(__dirname, "../../../../");
+    const targetVorma = path.join(projectPath, "node_modules/vorma");
+    
+    if (!fs.existsSync(targetVorma)) {
+        log.warn("node_modules/vorma not found, skipping copy");
+        return;
+    }
+    
+    // Копируем package.json
+    fs.copyFileSync(
+        path.join(sourceVorma, "package.json"),
+        path.join(targetVorma, "package.json")
+    );
+    
+    // Копируем Vue-файлы
+    const vueSource = path.join(sourceVorma, "npm_dist/internal/framework/_typescript/vue");
+    const vueTarget = path.join(targetVorma, "npm_dist/internal/framework/_typescript/vue");
+    if (fs.existsSync(vueSource)) {
+        fs.mkdirSync(vueTarget, { recursive: true });
+        fs.cpSync(vueSource, vueTarget, { recursive: true });
+        log.info("Copied Vue files to node_modules/vorma");
+    }
+}
+
 async function main() {
 	const args = process.argv.slice(2);
 	const isLocalTest = args.includes("--local-test");
@@ -379,6 +404,11 @@ func main() {
 				cwd: process.cwd(),
 				stdio: "inherit",
 			});
+			
+			// Копируем недостающие файлы Vorma в node_modules
+			if (isLocalTest) {
+    			await copyVormaFiles(process.cwd());
+			}
 		} catch (error) {
 			console.error("Failed to create app");
 			throw error;
