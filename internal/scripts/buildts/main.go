@@ -33,6 +33,14 @@ func main() {
 	buildCreate()
 
 	removeTestFiles()
+
+	if err := copyDir(filepath.Clean("bootstrap/tmpls"), filepath.Clean("npm_dist/bootstrap/tmpls")); err != nil {
+		log.Fatalf("copy bootstrap/tmpls: %v", err)
+	}
+	if err := copyFile(filepath.Clean("package.json"), filepath.Clean("npm_dist/package.json")); err != nil {
+		log.Fatalf("copy package.json: %v", err)
+	}
+	log.Println("bootstrap/tmpls and package.json copied to npm_dist")
 }
 
 func buildKit() {
@@ -282,4 +290,57 @@ func removeTestFiles() {
 	}
 
 	log.Println("Test files removed successfully")
+}
+
+// copyDir recursively copies a directory tree from src to dst using host paths (Windows-safe).
+func copyDir(src, dst string) error {
+	src = filepath.Clean(src)
+	dst = filepath.Clean(dst)
+
+	fi, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+	if !fi.IsDir() {
+		return fmt.Errorf("copyDir: %s is not a directory", src)
+	}
+
+	return filepath.WalkDir(src, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		rel, err := filepath.Rel(src, path)
+		if err != nil {
+			return err
+		}
+		outPath := filepath.Join(dst, rel)
+
+		if d.IsDir() {
+			return os.MkdirAll(outPath, 0755)
+		}
+
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
+			return err
+		}
+		return os.WriteFile(outPath, data, 0644)
+	})
+}
+
+func copyFile(src, dst string) error {
+	src = filepath.Clean(src)
+	dst = filepath.Clean(dst)
+
+	data, err := os.ReadFile(src)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
+		return err
+	}
+	return os.WriteFile(dst, data, 0644)
 }
