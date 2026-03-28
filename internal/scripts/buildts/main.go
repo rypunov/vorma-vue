@@ -212,6 +212,7 @@ func buildCreate() {
 			"node:stream",
 			"node:util",
 			"node:url",
+			"node:tty",
 		},
 		Outdir:   "./internal/framework/_typescript/create/dist",
 		Tsconfig: tsconfig,
