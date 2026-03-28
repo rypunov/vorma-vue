@@ -118,6 +118,8 @@ func (o Options) derived() derivedOptions {
 	case "vue":
 		do.TSConfigJSXVal = "preserve"
 		do.TSConfigJSXImportSourceVal = "vue"
+		// useLoaderData returns ComputedRef — templates use {data{{.Call}}} (see frontend_*_tsx_tmpl)
+		do.Call = ".value"
 	}
 
 	if o.DeploymentTarget != "none" &&
