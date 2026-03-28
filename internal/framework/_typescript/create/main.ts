@@ -103,7 +103,7 @@ async function main() {
 	if (createNewDir) {
 		const dirName = await text({
 			message: "Enter directory name:",
-			validate: (value) => {
+			validate: (value: string | undefined) => {
 				if (!value || value.trim() === "")
 					return "Directory name is required";
 				// Check for invalid characters in directory name
@@ -188,7 +188,7 @@ async function main() {
 		const modNameInput = await text({
 			message:
 				'Enter module name (e.g., "myapp" or "github.com/user/myapp"):',
-			validate: (value) => {
+			validate: (value: string | undefined) => {
 				if (!value || value.trim() === "")
 					return "Module name is required";
 				return undefined;
