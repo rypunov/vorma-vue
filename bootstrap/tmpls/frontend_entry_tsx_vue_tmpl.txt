@@ -1,4 +1,11 @@
-import { createApp } from 'vue'
-import { VormaRootOutlet } from 'vorma/vue'
-
-createApp(VormaRootOutlet).mount('#app')
+import { createApp } from "vue";
+import { getRootEl, initClient } from "vorma/client";
+import { VormaRootOutlet } from "vorma/{{.UIVariant}}";
+import { vormaAppConfig } from "./vorma.gen.ts";
+{{.TailwindFileImport}}
+await initClient({
+	vormaAppConfig,
+	renderFn: () => {
+		createApp(VormaRootOutlet).mount(getRootEl());
+	},
+});

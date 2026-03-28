@@ -234,7 +234,7 @@ var IncludeDefaults_Schema = jsonschema.OptionalBoolean(jsonschema.Def{
 var UIVariant_Schema = jsonschema.OptionalString(jsonschema.Def{
 	Description: `The UI variant to use with Vorma. Determines which UI frontend library integration to use.`,
 	Required:    true,
-	Examples:    []string{"react", "preact", "solid"},
+	Examples:    []string{"react", "preact", "solid", "vue"},
 })
 
 var HTMLTemplateLocation_Schema = jsonschema.OptionalString(jsonschema.Def{

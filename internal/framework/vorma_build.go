@@ -93,6 +93,11 @@ var (
 	solidDedupeList = []string{
 		"solid-js", "solid-js/web",
 	}
+	vueDedupeList = []string{
+		"vue",
+		"@vue/runtime-dom",
+		"@vue/runtime-core",
+	}
 )
 
 const vitePluginTemplateStr = `
@@ -148,6 +153,8 @@ func (v *Vorma) toRollupOptions(entrypoints []string, fileMap map[string]string)
 		dedupeList = preactDedupeList
 	case UIVariants.Solid:
 		dedupeList = solidDedupeList
+	case UIVariants.Vue:
+		dedupeList = vueDedupeList
 	}
 
 	ignoredList := []string{

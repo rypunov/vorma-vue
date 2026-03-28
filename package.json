@@ -23,6 +23,7 @@
 		"router",
 		"preact",
 		"solid",
+		"vue",
 		"meta-framework",
 		"vite"
 	],
@@ -44,8 +45,8 @@
 			"types": "./npm_dist/internal/framework/_typescript/preact/index.d.ts"
 		},
 		"./vue": {
-			"types": "./dist/vue/index.d.ts",
-			"import": "./dist/vue/index.js"
+			"import": "./npm_dist/internal/framework/_typescript/vue/index.js",
+			"types": "./npm_dist/internal/framework/_typescript/vue/index.d.ts"
 		},
 		"./vite": {
 			"import": "./npm_dist/internal/framework/_typescript/vite/vite.js",
@@ -120,6 +121,8 @@
 		"@types/react": "^19.1.12",
 		"@types/react-dom": "^19.1.9",
 		"@typescript/native-preview": "7.0.0-dev.20250716.1",
+		"@vitejs/plugin-vue": "^5.2.4",
+		"@vitejs/plugin-vue-jsx": "^4.1.2",
 		"@vue/runtime-dom": "^3.5.31",
 		"esbuild": "^0.25.9",
 		"esbuild-plugin-solid": "^0.6.0",

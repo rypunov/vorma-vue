@@ -41,7 +41,7 @@ tsreset: nuke-node-modules tsinstall
 tslint:
 	@pnpm oxlint
 
-tscheck: tscheck-kit tscheck-fw-client tscheck-fw-react tscheck-fw-solid
+tscheck: tscheck-kit tscheck-fw-client tscheck-fw-react tscheck-fw-solid tscheck-fw-vue
 
 tscheck-kit:
 	@pnpm tsgo --noEmit --project ./kit/_typescript
@@ -54,6 +54,9 @@ tscheck-fw-react:
 
 tscheck-fw-solid:
 	@pnpm tsgo --noEmit --project ./internal/framework/_typescript/solid
+
+tscheck-fw-vue:
+	@pnpm tsgo --noEmit --project ./internal/framework/_typescript/vue
 
 tscheck-fw-preact:
 	@pnpm tsgo --noEmit --project ./internal/framework/_typescript/preact

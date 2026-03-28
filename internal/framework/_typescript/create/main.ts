@@ -20,9 +20,26 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const allowedUIVariants = ["react", "preact", "solid", "vue"] as const;
+
 async function main() {
 	const args = process.argv.slice(2);
 	const isLocalTest = args.includes("--local-test");
+
+	const uiFlagIdx = args.indexOf("--ui");
+	let uiFromArg: (typeof allowedUIVariants)[number] | undefined;
+	if (uiFlagIdx !== -1) {
+		const raw = args[uiFlagIdx + 1];
+		if (!raw || raw.startsWith("-")) {
+			cancel("Usage: --ui must be followed by react | preact | solid | vue");
+			process.exit(1);
+		}
+		if (!(allowedUIVariants as readonly string[]).includes(raw)) {
+			cancel(`Unknown --ui "${raw}". Use one of: ${allowedUIVariants.join(", ")}`);
+			process.exit(1);
+		}
+		uiFromArg = raw as (typeof allowedUIVariants)[number];
+	}
 
 	console.log();
 	intro("Welcome to the Vorma new app creator!");
@@ -235,18 +252,25 @@ async function main() {
 	}
 
 	// Collect options
-	const uiVariant = await select({
-		message: "Choose frontend UI library:",
-		options: [
-			{ value: "react", label: "React" },
-			{ value: "preact", label: "Preact" },
-			{ value: "solid", label: "Solid" },
-		],
-	});
+	let uiVariant: string;
+	if (uiFromArg !== undefined) {
+		uiVariant = uiFromArg;
+	} else {
+		const choice = await select({
+			message: "Choose frontend UI library:",
+			options: [
+				{ value: "react", label: "React" },
+				{ value: "preact", label: "Preact" },
+				{ value: "solid", label: "Solid" },
+				{ value: "vue", label: "Vue" },
+			],
+		});
 
-	if (isCancel(uiVariant)) {
-		cancel("Operation cancelled");
-		process.exit(0);
+		if (isCancel(choice)) {
+			cancel("Operation cancelled");
+			process.exit(0);
+		}
+		uiVariant = choice as string;
 	}
 
 	const packageManager = (await select({

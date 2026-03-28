@@ -143,7 +143,7 @@ func buildPreact() {
 
 func buildVue() {
 	tsconfig := "./internal/framework/_typescript/vue/tsconfig.json"
-	runTSCWithOpts(tsconfig, "./dist/vue", "./internal/framework/_typescript/vue")
+	runTSC(tsconfig)
 	build("vue", esbuild.BuildOptions{
 		Sourcemap:   esbuild.SourceMapLinked,
 		Target:      esbuild.ESNext,
@@ -157,7 +157,7 @@ func buildVue() {
 			"vorma",
 			"vue",
 		},
-		Outdir:   "./dist/vue",
+		Outdir:   "./npm_dist/internal/framework/_typescript/vue",
 		Tsconfig: tsconfig,
 	})
 }

@@ -40,6 +40,8 @@ type derivedOptions struct {
 	TSConfigJSXVal             string
 	TSConfigJSXImportSourceVal string
 	UIVitePlugin               string
+	VitePluginImports          string // full import lines for vite.config.ts
+	VitePluginCalls            string // e.g. "react()" or "vue(), vueJsx()"
 	JSPackageManagerBaseCmd    string // "npx", "pnpm", "yarn", or "bunx"
 	Call                       string
 	PackageJSONExtras          string
@@ -209,6 +211,23 @@ func (o Options) derived() derivedOptions {
 
 	do.UIVitePlugin = resolveUIVitePlugin(do)
 
+	switch do.UIVariant {
+	case "react":
+		do.VitePluginImports = "import react from \"@vitejs/plugin-react-swc\";\n"
+		do.VitePluginCalls = "react()"
+	case "solid":
+		do.VitePluginImports = "import solid from \"vite-plugin-solid\";\n"
+		do.VitePluginCalls = "solid()"
+	case "preact":
+		do.VitePluginImports = "import preact from \"@preact/preset-vite\";\n"
+		do.VitePluginCalls = "preact()"
+	case "vue":
+		do.VitePluginImports = "import vue from \"@vitejs/plugin-vue\";\nimport vueJsx from \"@vitejs/plugin-vue-jsx\";\n"
+		do.VitePluginCalls = "vue(), vueJsx()"
+	default:
+		panic("unknown UI variant: " + do.UIVariant)
+	}
+
 	do.DynamicLinkParamsProp = dynamic_link_params_prop
 
 	do.StylePropOpen = "{{"
@@ -284,7 +303,12 @@ func Init(o Options) {
 	installJSPkg(do, "typescript")
 	installJSPkg(do, "vite")
 	installJSPkg(do, fmt.Sprintf("vorma@%s", vorma.Internal__GetCurrentNPMVersion()))
-	installJSPkg(do, resolveUIVitePlugin(do))
+	if do.UIVariant == "vue" {
+		installJSPkg(do, "@vitejs/plugin-vue")
+		installJSPkg(do, "@vitejs/plugin-vue-jsx")
+	} else {
+		installJSPkg(do, resolveUIVitePlugin(do))
+	}
 
 	if do.UIVariant == "react" {
 		do.tmplWriteMust("frontend/src/vorma.entry.tsx", "tmpls/frontend_entry_tsx_react_tmpl.txt")
@@ -310,9 +334,8 @@ func Init(o Options) {
 
 	if do.UIVariant == "vue" {
 		do.tmplWriteMust("frontend/src/vorma.entry.tsx", "tmpls/frontend_entry_tsx_vue_tmpl.txt")
-	
+
 		installJSPkg(do, "vue")
-		installJSPkg(do, "@vitejs/plugin-vue-jsx")
 	}
 
 	if do.DeploymentTarget == "vercel" {
@@ -411,8 +434,7 @@ func resolveUIVitePlugin(do derivedOptions) string {
 	case "preact":
 		return "@preact/preset-vite"
 	case "vue":
-		// Для Vue нужны оба плагина: основной и JSX
-		return "@vitejs/plugin-vue @vitejs/plugin-vue-jsx"
+		return "@vitejs/plugin-vue"
 	}
 	panic("unknown UI variant: " + do.UIVariant)
 }
