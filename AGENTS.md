@@ -20,6 +20,7 @@
 - Go: `go test ./...` (на Windows часть пакетов в `kit/` может падать из-за путей/процессов; для изменений фреймворка разумно: `go test ./internal/framework/... ./bootstrap/...`).
 - JS/TS: из корня `npx vitest run` или `pnpm vitest run`.
 - Строгая проверка типов (как в Makefile): `pnpm tsgo --noEmit --project ./internal/framework/_typescript/vue` и цели `tscheck-*` из `Makefile` (нужен `pnpm`).
+- **E2E (Playwright):** каталог `e2e/` — отдельный `package.json`, браузерные тесты против поднятого dev-сервера. Установка и запуск в **WSL**: см. `e2e/README.md`. Код правят в Cursor на Windows, тесты часто удобнее гонять в WSL (`cd e2e && npm install && npx playwright install chromium`, затем `BASE_URL=... npm test`).
 
 ## Поддержка Vue.js 3 в Vorma
 
