@@ -5,7 +5,11 @@
 ## Что проверяется
 
 - `smoke.spec.ts` — ответ `GET /`, отсутствие `error` в консоли и необработанных исключений на странице, наличие `#vorma-root`.
+- `ssr_hydration.spec.ts` — SSR: HTML содержит SSR-скрипт с данными и `#vorma-root` не пустой; гидратация: кнопка инкремента работает.
+- `loaders_actions.spec.ts` — loaders: `#count` число, `#docs-link` имеет href; actions: `count++` меняет UI.
 - `navigation.spec.ts` — клики по ссылкам `home` / `links` (как в шаблоне bootstrap). Если навигации нет, тест пропускается.
+- `errors.spec.ts` — проверка Error UI при ошибке loader/action (**пропускается**, если нет e2e-маршрутов).
+- `nested_routing.spec.ts` — nested routing `/users` и `/users/123` (**пропускается**, если нет e2e-маршрутов).
 
 Базовый URL задаётся переменной **`BASE_URL`** (по умолчанию `http://127.0.0.1:3000`).
 
@@ -122,6 +126,36 @@ npm test
 | `CI`        | Если задана, включены `forbidOnly` и повторы |
 
 ---
+
+## Как включить проверки ошибок и nested routing
+
+`errors.spec.ts` и `nested_routing.spec.ts` ожидают, что в приложении существуют тестовые маршруты. Если их нет, тесты автоматически пропускаются (404).
+
+Минимальный набор (в **вашем приложении**, а не в этом репозитории):
+
+1) В `frontend/src/vorma.routes.ts` добавьте:
+
+```ts
+route("/__e2e/error-loader", import("./components/e2e_error_loader.tsx"), "E2EErrorLoader");
+route("/__e2e/error-action", import("./components/e2e_error_action.tsx"), "E2EErrorAction");
+route("/users", import("./components/users.tsx"), "Users");
+route("/users/:id", import("./components/user.tsx"), "User");
+```
+
+2) В `backend/src/router/router.go` добавьте loader/action (примерно рядом с другими):
+
+- loader `/__e2e/error-loader` который возвращает `return nil, fmt.Errorf("e2e loader error")`
+- loader `/__e2e/error-action` (может быть пустой строкой/struct)
+- action `POST /__e2e/error-action` который возвращает `return 0, fmt.Errorf("e2e action error")`
+- loader `/users` и `/users/:id` (для `/users/:id` вернуть id из params)
+
+3) Во фронтенде добавьте компоненты с ожидаемыми id:
+
+- `e2e_error_action.tsx` с кнопкой `id="e2e-error-action-button"` которая вызывает `api.mutate({ pattern: "/__e2e/error-action" })`
+- `users.tsx` с контейнером `id="users-wrapper"`
+- `user.tsx` с контейнером `id="user-wrapper"` и элементом `id="user-id"` где отображается `params.id`
+
+После этого тесты перестанут пропускаться и начнут реально проверять ошибки и nested routing.
 
 ## Артефакты
 
