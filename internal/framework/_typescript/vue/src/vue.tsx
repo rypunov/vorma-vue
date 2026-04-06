@@ -342,7 +342,13 @@ VormaRootOutlet = defineComponent({
 				return null;
 			}
 
-			return h(Cur, { idx: props.idx, Outlet });
+			const routerData = getRouterData();
+			return h(Cur, { 
+				idx: props.idx, 
+				Outlet,
+				params: routerData.params,
+				routerData: routerData,
+			});
 		};
 	},
 });
